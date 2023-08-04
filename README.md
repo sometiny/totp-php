@@ -1,7 +1,5 @@
 # totp-php
-TOTP: Time-Based One-Time Password Algorithm
-
-RFC: [https://datatracker.ietf.org/doc/html/rfc6238]
+RFC: [TOTP: Time-Based One-Time Password Algorithm](https://datatracker.ietf.org/doc/html/rfc6238)
 
 ### test
 ```php
