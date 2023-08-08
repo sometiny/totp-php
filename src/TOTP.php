@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Utils;
+namespace Jazor\OTP;
 
 class TOTP
 {
@@ -11,7 +11,7 @@ class TOTP
 
     private static array $DIGITS_POWER = [1, 10, 100, 1000, 10000, 100000, 1000000, 10000000, 100000000];
     /**
-     * make quick compute
+     * make quick totp
      * @param string $key
      * @param int $t
      * @return string
@@ -22,14 +22,13 @@ class TOTP
         int    $t = 0): string
     {
 
-        if(strlen($key) !== 32) throw new \Exception('invalid key?key-length must be 32.');
         $key = Base32::quick_decode($key);
 
         return self::compute($key, $t);
     }
 
     /**
-     * make quick verify
+     * make quick totp verify
      * @param string $code
      * @param string $key
      * @param int $t
@@ -38,13 +37,13 @@ class TOTP
      */
     public static function verify(string $code, string $key, int $t): bool
     {
-        if(strlen($key) !== 32) throw new \Exception('invalid key?key-length must be 32.');
         $key = Base32::quick_decode($key);
 
         return $code == self::compute($key, $t);
     }
 
     /**
+     * full and raw totp implement
      * @param string $key shared secret key, binary
      * @param int $t time ticks
      * @param string $hamc hamc alg, sha1,sha256 and so on
@@ -76,6 +75,7 @@ class TOTP
     }
 
     /**
+     * hotp implement
      * @param string $key shared secret key, binary
      * @param string $counter the counter
      * @param string $hamc hamc alg, sha1,sha256 and so on

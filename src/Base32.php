@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Utils;
+namespace Jazor\OTP;
 
 class Base32
 {
