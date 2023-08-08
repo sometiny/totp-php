@@ -1,6 +1,11 @@
 # totp-php
 RFC: [TOTP: Time-Based One-Time Password Algorithm](https://datatracker.ietf.org/doc/html/rfc6238)
 
+### direct-call
+```php
+echo TOTP::generate('Y5C4TFC5Q6OZHMXS7NOEDO5AYUP5XWMK', time());
+```
+
 ### test
 ```php
 // Seed for HMAC-SHA1 - 20 bytes
@@ -59,6 +64,3 @@ time: 20000000000, date: 2603-10-11 11:33:20, code: 77737706, alg: SHA256
 time: 20000000000, date: 2603-10-11 11:33:20, code: 47863826, alg: SHA512
 ```
 
-```php
-echo TOTP::generate('Y5C4TFC5Q6OZHMXS7NOEDO5AYUP5XWMK', time());
-```
