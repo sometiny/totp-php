@@ -58,3 +58,7 @@ time: 20000000000, date: 2603-10-11 11:33:20, code: 65353130, alg: SHA1
 time: 20000000000, date: 2603-10-11 11:33:20, code: 77737706, alg: SHA256
 time: 20000000000, date: 2603-10-11 11:33:20, code: 47863826, alg: SHA512
 ```
+
+```
+echo TOTP::generate('Y5C4TFC5Q6OZHMXS7NOEDO5AYUP5XWMK', time());
+```
