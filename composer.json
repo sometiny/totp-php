@@ -1,0 +1,19 @@
+{
+    "name": "jazor/totp-for-php",
+    "description": "totp/hotp implements for php",
+    "keywords": [
+        "totp",
+        "hotp",
+        "two-factor",
+        "authenticator"
+    ],
+    "license": "MIT",
+    "require": {
+        "php": "^7.0 || ^8.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "jazor\\totp-for-php\\": "src/"
+        }
+    }
+}
