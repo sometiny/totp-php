@@ -22,7 +22,7 @@ class TOTP
         int    $t = 0): string
     {
 
-        $key = Base32::quick_decode($key);
+        $key = Base32::decode($key);
 
         return self::compute($key, $t);
     }
@@ -37,7 +37,7 @@ class TOTP
      */
     public static function verify(string $code, string $key, int $t): bool
     {
-        $key = Base32::quick_decode($key);
+        $key = Base32::decode($key);
 
         return $code == self::compute($key, $t);
     }

@@ -203,7 +203,7 @@ class Uri
      */
     public function getBinarySecret(): string
     {
-        return Base32::quick_decode($this->secret);
+        return Base32::decode($this->secret);
     }
 
     public function __toString()
