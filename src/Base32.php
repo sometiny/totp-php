@@ -60,19 +60,22 @@ class Base32
         $length = strlen($chars);
         while ($chars[$length - 1] === '=') $length--;
 
-        $padding_length = 8 - $length % 8;
-        if ($padding_length === 8) $padding_length = 0;
+        $padding_length = $length % 8;
+        if ($padding_length > 0) {
+            $padding_length = 8 - $padding_length;
+            $chars = str_pad($chars, $length + $padding_length, "=");
+        }
 
         $result = [];
         for ($i = 0; $i < $length; $i += 8) {
             $a = $table[$chars[$i]];
             $b = $table[$chars[$i + 1]];
-            $c = $table[$chars[$i + 2] ?? '='] & 0x1f;
-            $d = $table[$chars[$i + 3] ?? '='] & 0x1f;
-            $e = $table[$chars[$i + 4] ?? '='] & 0x1f;
-            $f = $table[$chars[$i + 5] ?? '='] & 0x1f;
-            $g = $table[$chars[$i + 6] ?? '='] & 0x1f;
-            $h = $table[$chars[$i + 7] ?? '='] & 0x1f;
+            $c = $table[$chars[$i + 2]] & 0x1f;
+            $d = $table[$chars[$i + 3]] & 0x1f;
+            $e = $table[$chars[$i + 4]] & 0x1f;
+            $f = $table[$chars[$i + 5]] & 0x1f;
+            $g = $table[$chars[$i + 6]] & 0x1f;
+            $h = $table[$chars[$i + 7]] & 0x1f;
 
 
             $x = (($a << 5) | $b) >> 2;
@@ -94,7 +97,7 @@ class Base32
             while ($removeLength-- > 0) array_pop($result);
         }
 
-        return pack('C*', ...$result);;
+        return pack('C*', ...$result);
 
     }
 
@@ -107,19 +110,20 @@ class Base32
     public static function encode(string $binary, array $table = self::base32_encode_lookup_table): string
     {
         if (empty($binary)) return '';
-        $bytes = unpack('C*', $binary);
 
-        $length = count($bytes);
+        $length = strlen($binary);
         $remain_length = $length % 5;
 
-        $result = '';
+        if ($remain_length > 0) $binary = str_pad($binary, $length + (5 - $remain_length), "\0");
+
+        $result = [];
 
         for ($i = 0; $i < $length; $i += 5) {
-            $x = $bytes[$i + 1];
-            $y = $bytes[$i + 2] ?? 0;
-            $z = $bytes[$i + 3] ?? 0;
-            $m = $bytes[$i + 4] ?? 0;
-            $n = $bytes[$i + 5] ?? 0;
+            $x = ord($binary[$i]);
+            $y = ord($binary[$i + 1]);
+            $z = ord($binary[$i + 2]);
+            $m = ord($binary[$i + 3]);
+            $n = ord($binary[$i + 4]);
 
 
             $a = $x >> 3;
@@ -134,14 +138,14 @@ class Base32
 
             $h = $n & 0x1f;
 
-            $result .= sprintf('%s%s%s%s%s%s%s%s', $table[$a], $table[$b], $table[$c], $table[$d], $table[$e], $table[$f], $table[$g], $table[$h]);
+            array_push($result, $table[$a], $table[$b], $table[$c], $table[$d], $table[$e], $table[$f], $table[$g], $table[$h]);
         }
         if ($remain_length > 0) {
             $padding = self::encode_padding[$remain_length];
-            $length = strlen($result);
+            $length = count($result);
             while ($padding-- > 0) $result[$length - $padding - 1] = '=';
         }
 
-        return $result;
+        return implode('', $result);
     }
 }
