@@ -9,7 +9,7 @@ class TOTP
     public const HMAC = 'sha1';
     public const RETURN_LENGTH = 6;
 
-    private static array $DIGITS_POWER = [1, 10, 100, 1000, 10000, 100000, 1000000, 10000000, 100000000];
+    private const DIGITS_POWER = [1, 10, 100, 1000, 10000, 100000, 1000000, 10000000, 100000000];
     /**
      * make quick totp
      * @param string $key
@@ -102,7 +102,7 @@ class TOTP
             ($hash[$offset + 4] & 0xff);
 
 
-        $otp = $number % self::$DIGITS_POWER[$return_length];
+        $otp = $number % self::DIGITS_POWER[$return_length];
 
         return str_pad($otp . '', $return_length, '0', STR_PAD_LEFT);
     }
