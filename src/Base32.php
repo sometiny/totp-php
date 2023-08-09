@@ -58,28 +58,21 @@ class Base32
     {
         if (empty($chars)) return '';
         $length = strlen($chars);
-        while ($chars[$length - 1] === '=') {
-            $length--;
-        }
+        while ($chars[$length - 1] === '=') $length--;
+
         $padding_length = 8 - $length % 8;
         if ($padding_length === 8) $padding_length = 0;
-
-        if ($padding_length > 0) {
-            for ($i = 0; $i < $padding_length; $i++) $chars .= '=';
-            $length += $padding_length;
-        }
-
 
         $result = [];
         for ($i = 0; $i < $length; $i += 8) {
             $a = $table[$chars[$i]];
             $b = $table[$chars[$i + 1]];
-            $c = $table[$chars[$i + 2]] & 0x1f;
-            $d = $table[$chars[$i + 3]] & 0x1f;
-            $e = $table[$chars[$i + 4]] & 0x1f;
-            $f = $table[$chars[$i + 5]] & 0x1f;
-            $g = $table[$chars[$i + 6]] & 0x1f;
-            $h = $table[$chars[$i + 7]] & 0x1f;
+            $c = $table[$chars[$i + 2] ?? '='] & 0x1f;
+            $d = $table[$chars[$i + 3] ?? '='] & 0x1f;
+            $e = $table[$chars[$i + 4] ?? '='] & 0x1f;
+            $f = $table[$chars[$i + 5] ?? '='] & 0x1f;
+            $g = $table[$chars[$i + 6] ?? '='] & 0x1f;
+            $h = $table[$chars[$i + 7] ?? '='] & 0x1f;
 
 
             $x = (($a << 5) | $b) >> 2;
