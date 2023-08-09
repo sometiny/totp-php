@@ -106,48 +106,4 @@ class TOTP
 
         return str_pad($otp . '', $return_length, '0', STR_PAD_LEFT);
     }
-
-
-    /**
-     * @param string $url
-     * @return array
-     * @throws \Exception
-     */
-    public static function fromUri(string $url): array
-    {
-        $isMatch = preg_match('#^otpauth://(totp|hotp)/(.+?)\?(.+?)$#', $url, $match);
-        if(!$isMatch) throw new \Exception('invalid url');
-
-        $type = $match[1];
-        $label = urldecode($match[2]);
-        parse_str($match[3], $parameters);
-        if(empty($parameters['secret'])){
-            throw new \Exception('secret is necessary!');
-        }
-
-        if($type === 'hotp' && empty($parameters['counter'])) {
-            throw new \Exception('counter is necessary for hotp!');
-        }
-
-        $label_components = [];
-        $idx = strpos($label, ':');
-        if($idx !== false) {
-            $label_components = [
-                substr($label, 0, $idx),
-                ltrim(substr($label, $idx), ':')
-            ];
-        }
-
-        return [
-            'type' => $type,
-            'label' => $label,
-            'label_components' => $label_components,
-            'secret' => $parameters['secret'],
-            'issuer' => $parameters['issuer'] ?? '',
-            'algorithm' => $parameters['algorithm'] ?? 'sha1',
-            'digits' => $parameters['digits'] ?? 6,
-            'counter' => $parameters['counter'] ?? null,
-            'period' => $parameters['period'] ?? 30,
-        ];
-    }
 }
