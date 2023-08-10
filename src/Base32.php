@@ -78,17 +78,17 @@ class Base32
             $h = $table[$chars[$i + 7]] & 0x1f;
 
 
-            $x = (($a << 5) | $b) >> 2;
-            $y = (($b & 0x3) << 5) | $c;
-            $y = (($y << 5) | $d) >> 4;
+            $x = ($a << 5 | $b) >> 2;
+            $y = ($b & 0x3) << 5 | $c;
+            $y = ($y << 5 | $d) >> 4;
 
-            $z = ((($d & 0xf) << 5) | $e) >> 1;
+            $z = (($d & 0xf) << 5 | $e) >> 1;
 
-            $m = (($e & 0x1) << 5) | $f;
+            $m = ($e & 0x1) << 5 | $f;
 
-            $m = (($m << 5) | $g) >> 3;
+            $m = ($m << 5 | $g) >> 3;
 
-            $n = (($g & 0x7) << 5) | $h;
+            $n = ($g & 0x7) << 5 | $h;
             array_push($result, $x, $y, $z, $m, $n);
         }
 
@@ -116,7 +116,7 @@ class Base32
 
         if ($remain_length > 0) $binary = str_pad($binary, $length + (5 - $remain_length), "\0");
 
-        $result = [];
+        $result = '';
 
         for ($i = 0; $i < $length; $i += 5) {
             $x = ord($binary[$i]);
@@ -127,25 +127,25 @@ class Base32
 
 
             $a = $x >> 3;
-            $b = (($x & 0x7) << 2) | ($y >> 6);
-            $c = ($y >> 1) & (0x1f);
-            $d = (($y & 0x1) << 4) | ($z >> 4);
-            $e = (($z & 0xf) << 1) | ($m >> 7);
+            $b = (($x & 0x7) << 8 | $y ) >> 6;
+            $c = $y >> 1 & 0x1f;
+            $d = (($y & 0x1) << 8 | $z ) >> 4;
+            $e = (($z & 0xf) << 8 | $m ) >> 7;
 
-            $f = ($m >> 2) & 0x1f;
+            $f = $m >> 2 & 0x1f;
 
-            $g = (($m & 0x3) << 3) | ($n >> 5);
+            $g = (($m & 0x3) << 8 | $n ) >> 5;
 
             $h = $n & 0x1f;
 
-            array_push($result, $table[$a], $table[$b], $table[$c], $table[$d], $table[$e], $table[$f], $table[$g], $table[$h]);
+            $result .= sprintf('%s%s%s%s%s%s%s%s', $table[$a], $table[$b], $table[$c], $table[$d], $table[$e], $table[$f], $table[$g], $table[$h]);
         }
         if ($remain_length > 0) {
             $padding = self::encode_padding[$remain_length];
-            $length = count($result);
-            while ($padding-- > 0) $result[$length - $padding - 1] = '=';
+            $length = strlen($result);
+            while ($padding-- > 0) $result[--$length] = '=';
         }
 
-        return implode('', $result);
+        return $result;
     }
 }
