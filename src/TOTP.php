@@ -78,18 +78,21 @@ class TOTP
      * hotp implement
      * @param string $key shared secret key, binary
      * @param string $counter the counter
-     * @param string $hamc hamc alg, sha1,sha256 and so on
+     * @param string $algorithm hamc algorithm, sha1,sha256 and so on
      * @param int $return_length return number length
      * @return string
+     * @throws \Exception
      */
     public static function hotp(
         string $key,
         string $counter,
-        string $hamc = self::HMAC,
+        string $algorithm = self::HMAC,
         int    $return_length = self::RETURN_LENGTH
     ): string
     {
-        $hash = hash_hmac($hamc, $counter, $key, true);
+        if(strlen($counter) !== 8) throw new \Exception('invalid counter, length must be 8');
+
+        $hash = hash_hmac($algorithm, $counter, $key, true);
 
         $hash = unpack('C*', $hash);
 
