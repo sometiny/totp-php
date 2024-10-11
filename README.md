@@ -1,12 +1,33 @@
 # totp-php
 RFC: [TOTP: Time-Based One-Time Password Algorithm](https://datatracker.ietf.org/doc/html/rfc6238)
 
-### direct-call
+### Uri
+```php
+$uri = new Uri('otpauth://totp/test_account:your-site.com?secret=Y5C4TFC5Q6OZHMXS7NOEDO5AYUP5XWMK&algorithm=sha1&digits=6&period=30');
+
+$secret = $uri->getSecret();
+
+echo 'key = ' . $secret . "\r\n";
+// output:
+// key = Y5C4TFC5Q6OZHMXS7NOEDO5AYUP5XWMK
+
+$uri = new Uri();
+$uri->setLabel('test');
+$uri->setType('totp'); //default is 'totp'
+$uri->setSecret('Y5C4TFC5Q6OZHMXS7NOEDO5AYUP5XWMK');
+
+echo 'totp uri = ' . $uri . "\r\n";
+// output:
+// totp uri = otpauth://totp/test?secret=Y5C4TFC5Q6OZHMXS7NOEDO5AYUP5XWMK
+
+```
+### 快速调用
+默认为30秒步长，6个数字的验证码，使用SHA1算法。
 ```php
 echo TOTP::generate('Y5C4TFC5Q6OZHMXS7NOEDO5AYUP5XWMK', time());
 ```
 
-### test
+### 更多测试
 ```php
 // Seed for HMAC-SHA1 - 20 bytes
 $seed = Base32::decode("GEZDGNBVGY3TQOJQGEZDGNBVGY3TQOJQ");
@@ -40,26 +61,7 @@ for ($t = 0; $t < count($testTime); $t++) {
         TOTP::compute($seed64, $testTime[$t], 'sha512', 8, $X, $T0));
 }
 
-$tests = 'foobar';
-for ($i = 1; $i <= mb_strlen($tests, 'utf-8'); $i++){
-    $str = mb_substr($tests, 0, $i, 'utf-8');
-    $encoded = Base32::encode($str);
-    $decoded = Base32::decode($encoded);
-    $equal = $decoded === $str ? 'yes' : 'no';
-    echo "{$str} => {$encoded} => {$decoded} => {$equal}\r\n";
-}
-
-for ($i = 1; $i <= mb_strlen($tests, 'utf-8'); $i++){
-    $str = mb_substr($tests, 0, $i, 'utf-8');
-    $encoded = Base32::encode($str, Base32::base32_encode_lookup_table_hex);
-    $decoded = Base32::decode($encoded, Base32::base32_decode_lookup_table_hex);
-    $equal = $decoded === $str ? 'yes' : 'no';
-    echo "{$str} => {$encoded} => {$decoded} => {$equal}\r\n";
-}
-```
-
-### test-result
-```
+/* 输出结果：
 time: 59, date: 1970-01-01 00:00:59, code: 94287082, alg: SHA1
 time: 59, date: 1970-01-01 00:00:59, code: 46119246, alg: SHA256
 time: 59, date: 1970-01-01 00:00:59, code: 90693936, alg: SHA512
@@ -78,17 +80,6 @@ time: 2000000000, date: 2033-05-18 03:33:20, code: 38618901, alg: SHA512
 time: 20000000000, date: 2603-10-11 11:33:20, code: 65353130, alg: SHA1
 time: 20000000000, date: 2603-10-11 11:33:20, code: 77737706, alg: SHA256
 time: 20000000000, date: 2603-10-11 11:33:20, code: 47863826, alg: SHA512
-f => MY====== => f => yes
-fo => MZXQ==== => fo => yes
-foo => MZXW6=== => foo => yes
-foob => MZXW6YQ= => foob => yes
-fooba => MZXW6YTB => fooba => yes
-foobar => MZXW6YTBOI====== => foobar => yes
-f => CO====== => f => yes
-fo => CPNG==== => fo => yes
-foo => CPNMU=== => foo => yes
-foob => CPNMUOG= => foob => yes
-fooba => CPNMUOJ1 => fooba => yes
-foobar => CPNMUOJ1E8====== => foobar => yes
+ */
 ```
 

@@ -10,6 +10,7 @@ class TOTP
     public const RETURN_LENGTH = 6;
 
     private const DIGITS_POWER = [1, 10, 100, 1000, 10000, 100000, 1000000, 10000000, 100000000];
+
     /**
      * make quick totp
      * @param string $key
@@ -90,7 +91,7 @@ class TOTP
         int    $return_length = self::RETURN_LENGTH
     ): string
     {
-        if(strlen($counter) !== 8) throw new \Exception('invalid counter, length must be 8');
+        if (strlen($counter) !== 8) throw new \Exception('invalid counter, length must be 8');
 
         $hash = hash_hmac($algorithm, $counter, $key, true);
 

@@ -14,7 +14,7 @@ class Uri
     private string $secret = '';
     private array $label_components = [];
 
-    public function __construct(?string $url)
+    public function __construct(?string $url = null)
     {
         if (empty($url)) return;
         $isMatch = preg_match('#^otpauth://(totp|hotp)/(.+?)\?(.+?)$#', $url, $match);
@@ -208,11 +208,15 @@ class Uri
 
     public function __toString()
     {
+        if (empty($this->label)) throw new \Exception('label for \'hotp|totp\' required');
+        if (empty($this->secret)) throw new \Exception('secret for \'hotp|totp\' required');
+        if ($this->type === 'hotp' && empty($this->counter)) throw new \Exception('counter for \'hotp\' required');
+
         $components = ['otpauth://', $this->type, '/', urlencode($this->label), '?secret=', urlencode($this->secret)];
-        if($this->algorithm !== 'sha1') array_push($components, '&algorithm=', $this->algorithm);
+        if ($this->algorithm !== 'sha1') array_push($components, '&algorithm=', $this->algorithm);
         if (!empty($this->counter)) array_push($components, '&counter=', $this->counter);
-        if($this->digits !== 6) array_push($components, '&digits=', $this->digits);
-        if($this->period !== 30) array_push($components, '&period=', $this->period);
+        if ($this->digits !== 6) array_push($components, '&digits=', $this->digits);
+        if ($this->period !== 30) array_push($components, '&period=', $this->period);
         if (!empty($this->issuer)) array_push($components, '&issuer=', urlencode($this->issuer));
         return implode('', $components);
     }
