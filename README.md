@@ -24,7 +24,11 @@ echo 'totp uri = ' . $uri . "\r\n";
 ### 快速调用
 默认为30秒步长，6个数字的验证码，使用SHA1算法。
 ```php
+//生成
 echo TOTP::generate('Y5C4TFC5Q6OZHMXS7NOEDO5AYUP5XWMK', time());
+
+//校验
+echo TOTP::verify('123456', 'Y5C4TFC5Q6OZHMXS7NOEDO5AYUP5XWMK', time());
 ```
 
 ### 更多测试
